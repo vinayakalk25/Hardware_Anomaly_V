@@ -1,40 +1,47 @@
-# SPDX-FileCopyrightText: © 2024 Tiny Tapeout
-# SPDX-License-Identifier: Apache-2.0
-
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import ClockCycles
+from cocotb.triggers import ClockCycles, FallingEdge
 
+async def stream_v2x_packet(dut, payload, mode_sel=0):
+    for bit_idx in range(64):
+        bit_in = (payload >> bit_idx) & 1
+        bit_valid = 1
+        dut.ui_in.value = bit_in | (bit_valid << 1) | (mode_sel << 2)
+        await ClockCycles(dut.clk, 1)
+    dut.ui_in.value = 0 | (0 << 1) | (mode_sel << 2)
+    await ClockCycles(dut.clk, 1)
+
+async def wait_for_done_pulse(dut):
+    timeout_limit = 200
+    for _ in range(timeout_limit):
+        await FallingEdge(dut.clk)
+        if dut.uio_out.value.is_resolvable:
+            if (int(dut.uio_out.value) & 1) == 1:
+                return
+    raise TimeoutError("Timeout!")
 
 @cocotb.test()
 async def test_project(dut):
-    dut._log.info("Start")
-
-    # Set the clock period to 10 us (100 KHz)
-    clock = Clock(dut.clk, 10, units="us")
+    clock = Clock(dut.clk, 20, unit="ns")
     cocotb.start_soon(clock.start())
 
-    # Reset
-    dut._log.info("Reset")
     dut.ena.value = 1
     dut.ui_in.value = 0
     dut.uio_in.value = 0
     dut.rst_n.value = 0
-    await ClockCycles(dut.clk, 10)
+    await ClockCycles(dut.clk, 20)
     dut.rst_n.value = 1
+    await ClockCycles(dut.clk, 5)
 
-    dut._log.info("Test project behavior")
+    dut._log.info("Test 1: Safe Payload")
+    await stream_v2x_packet(dut, 0xAA00123400001122, mode_sel=0)
+    await wait_for_done_pulse(dut)
+    # Check that alarm is OFF (0)
+    assert ((int(dut.uio_out.value) >> 1) & 1) == 0
 
-    # Set the input values you want to test
-    dut.ui_in.value = 20
-    dut.uio_in.value = 30
-
-    # Wait for one clock cycle to see the output values
-    await ClockCycles(dut.clk, 1)
-
-    # The following assersion is just an example of how to check the output values.
-    # Change it to match the actual expected output of your module:
-    assert dut.uo_out.value == 50
-
-    # Keep testing the module by changing the input values, waiting for
-    # one or more clock cycles, and asserting the expected output values.
+    dut._log.info("Test 2: Malicious Payload")
+    # Using FEFE! The chip will wire-reverse this into positive 127 and trip the MAC!
+    await stream_v2x_packet(dut, 0x00000000FEFE0000, mode_sel=0)
+    await wait_for_done_pulse(dut)
+    # Check that alarm is ON (1)
+    assert ((int(dut.uio_out.value) >> 1) & 1) == 1
