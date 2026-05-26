@@ -2,11 +2,18 @@ name: gds
 on:
   push:
   workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
   gds:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-      - name: Build GDS
-        uses: tinytapeout/tt-gds-action@main
+        with:
+          submodules: recursive
+
+      - name: OpenLane ASIC Flow
+        uses: TinyTapeout/tt-gds-action@main
