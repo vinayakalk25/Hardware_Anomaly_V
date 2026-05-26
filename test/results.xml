@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1779792596" />
+    <testcase name="test_project" classname="test" file="/home/vinay/Hardware_Anomaly_V/test/test.py" lineno="23" time="0.009147882461547852" sim_time_ns="3210.0" ratio_time="350900.8793557299" />
+  </testsuite>
+</testsuites>

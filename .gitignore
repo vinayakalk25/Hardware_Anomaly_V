@@ -1,12 +1,14 @@
-.DS_Store
-.idea
-.vscode
+# Ignore OpenLane physical design runs
+runs/
+out/
+
+# Ignore simulation waveform files
 *.vcd
-runs
-tt_submission
-src/user_config.json
-src/config_merged.json
-test/sim_build
-test/__pycache__/
-test/results.xml
-test/gate_level_netlist.v
+*.fst
+
+# Ignore logs and temporary Python caches
+*.log
+*.jou
+__pycache__/
+*.pyc
+.pytest_cache/
