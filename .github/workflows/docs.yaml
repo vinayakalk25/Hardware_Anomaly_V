@@ -12,6 +12,6 @@ jobs:
           submodules: true
 
       - name: Build docs
-        uses: TinyTapeout/tt-support-action@v2
+        uses: docker://tinytapeout/tt-action:latest
         with:
-          action: docs
+          args: make docs
