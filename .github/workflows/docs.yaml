@@ -8,10 +8,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          submodules: true
 
-      - name: Build docs
-        uses: docker://tinytapeout/tt-action:latest
-        with:
-          args: make docs
+      - name: Build Docs
+        uses: TinyTapeout/tt-gds-action/docs@main
