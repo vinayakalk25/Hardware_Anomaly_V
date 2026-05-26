@@ -8,10 +8,10 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: checkout repo
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: true
 
       - name: Build docs
-        uses: TinyTapeout/tt-gds-action/docs@tt08
+        uses: TinyTapeout/tt-docs-action@v1
