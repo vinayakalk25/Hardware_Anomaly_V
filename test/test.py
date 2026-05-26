@@ -22,7 +22,7 @@ async def wait_for_done_pulse(dut):
 
 @cocotb.test()
 async def test_project(dut):
-    clock = Clock(dut.clk, 20, unit="ns")
+    clock = Clock(dut.clk, 20, units="ns")
     cocotb.start_soon(clock.start())
 
     dut.ena.value = 1

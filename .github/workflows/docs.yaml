@@ -11,7 +11,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: true
+
+      - name: Install typst (PDF Builder)
+        run: |
+          wget -qO- https://github.com/typst/typst/releases/download/v0.11.0/typst-x86_64-unknown-linux-musl.tar.xz | tar -xJ
+          sudo mv typst-x86_64-unknown-linux-musl/typst /usr/local/bin/
 
       - name: Build docs
-        uses: TinyTapeout/tt-gds-action/docs@tt08
+        uses: TinyTapeout/tt-docs-action@v1
