@@ -1,17 +1,12 @@
 name: docs
-
 on:
   push:
   workflow_dispatch:
-
 jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout repo
+      - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - name: Build docs
-        uses: TinyTapeout/tt-docs-action@v1
+      - name: Build Docs
+        uses: tinytapeout/tt-docs-action@main

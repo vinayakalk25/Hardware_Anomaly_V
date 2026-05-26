@@ -1,21 +1,12 @@
 name: gds
-
 on:
   push:
   workflow_dispatch:
-
 jobs:
   gds:
-    env:
-      ROUTE_STRATEGY: "14"
     runs-on: ubuntu-latest
     steps:
-      - name: checkout repo
+      - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          submodules: true
-
       - name: Build GDS
-        uses: TinyTapeout/tt-gds-action@v2
-        with:
-          route_strategy: ${{ env.ROUTE_STRATEGY }}
+        uses: tinytapeout/tt-gds-action@main

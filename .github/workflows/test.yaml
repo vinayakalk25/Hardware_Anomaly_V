@@ -1,17 +1,12 @@
 name: test
-
 on:
   push:
   workflow_dispatch:
-
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout repo
+      - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - name: Run Tests
-        uses: TinyTapeout/tt-test-action@v1
+      - name: Run Verification Tests
+        uses: tinytapeout/tt-test-action@main
